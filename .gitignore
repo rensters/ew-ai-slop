@@ -1,0 +1,6 @@
+# zips go in github releases, not the repo
+dist/*.zip
+popup-preview.html
+node_modules/
+.DS_Store
+Thumbs.db

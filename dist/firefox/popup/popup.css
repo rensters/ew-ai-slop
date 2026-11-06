@@ -1,0 +1,175 @@
+/* popup.css - bee colors. navy night mode by default, light mode people get the media query below */
+
+:root {
+  --bg: #121c25;        /* the bee's navy, but darker so the yellow pops */
+  --panel: #1b2935;     /* straight bee navy */
+  --line: #2a3a48;
+  --text: #f3eedb;
+  --dim: #9aa7b2;
+  --accent: #e6cf3a;    /* bee yellow */
+  --on-accent: #1b2935; /* stuff sitting ON the yellow */
+  --accent-ink: #e6cf3a; /* yellow when it's text. light mode needs a darker one or you can't read it */
+  --knob: #f3eedb;
+  --off: #34475a;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #fbf7e4;
+    --panel: #ffffff;
+    --line: #e7e0bf;
+    --text: #1b2935;
+    --dim: #5d6b77;
+    --accent-ink: #8a7300;
+    --knob: #ffffff;
+    --off: #cfd5db;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  width: 350px;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 14px 14px 10px;
+}
+header img { border-radius: 8px; flex: none; }
+h1 { margin: 0; font-size: 15px; font-weight: 700; }
+h1 span { color: var(--dim); font-weight: 500; }
+header p { margin: 2px 0 0; color: var(--dim); font-size: 12px; }
+
+main { padding: 0 10px; }
+
+h2 {
+  margin: 12px 4px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.group {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.row + .row { border-top: 1px solid var(--line); }
+.row .txt { flex: 1; min-width: 0; }
+.row b { display: block; font-weight: 600; }
+.row small { display: block; color: var(--dim); font-size: 11.5px; margin-top: 1px; }
+.tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  vertical-align: 1px;
+  color: var(--dim);
+  border: 1px solid var(--line);
+}
+
+/* the switch. a checkbox in a trench coat */
+.row input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--off);
+  position: relative;
+  cursor: pointer;
+  transition: background .15s;
+}
+.row input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--knob);
+  transition: transform .15s;
+}
+.row input:checked { background: var(--accent); }
+.row input:checked::after { background: var(--on-accent); }
+.row input:checked::after { transform: translateX(14px); }
+.row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+#hint {
+  margin: 10px 10px 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--text);
+  font-size: 12px;
+}
+
+footer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 10px 14px;
+}
+button {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+button.ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+}
+button:hover { filter: brightness(1.08); }
+button.pulse { animation: pulse 1s ease-in-out 2; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent); } }
+
+/* ko-fi link. small, at the bottom, not begging. ok maybe a LITTLE begging */
+#tip {
+  margin: -4px 0 0;
+  padding: 0 10px 12px;
+  text-align: center;
+  font-size: 12px;
+}
+#debug { margin: -6px 0 0; padding: 0 10px 12px; text-align: center; }
+/* a button dressed as a link. it's not proud of it */
+button.linky {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--dim);
+  font-size: 11.5px;
+  font-weight: 400;
+  text-decoration: underline dotted;
+}
+button.linky:hover, button.linky:focus-visible { color: var(--accent-ink); filter: none; }
+#tip a { color: var(--dim); text-decoration: none; }
+#tip a:hover, #tip a:focus-visible { color: var(--accent-ink); text-decoration: underline; }

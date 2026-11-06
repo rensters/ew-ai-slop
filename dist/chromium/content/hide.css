@@ -1,0 +1,68 @@
+/*
+  hide.css - the "if it slipped past page.js, hide it anyway" layer.
+  every rule is gated on <html data-aioff="..."> so the popup switches work live, no reload.
+
+  the weird path[d^="..."] selectors = gemini's sparkle icon. youtube slaps it on everything AI,
+  which is honestly the only helpful thing they did in this whole saga.
+  (desktop version first, the 24px mobile-style one second)
+*/
+
+/* ----- Ask button + any other sparkle button / chip / menu item ----- */
+html[data-aioff~="ask"] :is(yt-button-view-model, button-view-model, ytd-button-renderer, yt-chip-cloud-chip-renderer, chip-view-model, ytd-menu-service-item-renderer, yt-list-item-view-model):has(:is(path[d^="M480-80q0-83-31.5-156T363-363"], path[d^="M1 12c6.075 0 11 4.925 11 11"])),
+html[data-aioff~="ask"] [data-aioff-hid], /* page.js tags these when it spots an "Ask" button by its text */
+html[data-aioff~="ask"] ytd-structured-description-content-renderer > #items > :not(ytd-expandable-metadata-renderer):has(:is(path[d^="M480-80q0-83-31.5-156T363-363"], path[d^="M1 12c6.075 0 11 4.925 11 11"])),
+html[data-aioff~="ask"] ytd-engagement-panel-section-list-renderer:is([target-id*="youchat" i], [target-id*="conversational" i]) {
+  display: none !important;
+}
+
+/* ----- AI video summaries (description + search results) ----- */
+html[data-aioff~="summaries"] :is(#expandable-metadata, ytd-expandable-metadata-renderer):has(:is(path[d^="M480-80q0-83-31.5-156T363-363"], path[d^="M1 12c6.075 0 11 4.925 11 11"])),
+html[data-aioff~="summaries"] #video-summary.ytd-structured-description-content-renderer,
+html[data-aioff~="summaries"] video-summary-content-view-model {
+  display: none !important;
+}
+
+/* ----- ALL chapters: screen-level backup in case the data trick gets beaten to the punch
+   (brave shields etc. hook the same stuff page.js does). this one doesn't care who made the chapters ----- */
+html[data-aioff~="allchapters"] #movie_player .ytp-chapter-container,
+html[data-aioff~="allchapters"] #movie_player .ytp-tooltip-progress-bar-pill-title,
+html[data-aioff~="allchapters"] ytd-structured-description-content-renderer > #items > ytd-horizontal-card-list-renderer:has(ytd-macro-markers-list-item-renderer),
+html[data-aioff~="allchapters"] ytd-engagement-panel-section-list-renderer[target-id*="macro-markers"],
+html[data-aioff~="allchapters"] :is(ytd-video-renderer, yt-lockup-view-model) #expandable-metadata:has(ytd-macro-markers-list-item-renderer) {
+  display: none !important;
+}
+/* glue the chopped-up progress bar back into one piece. measured: segments fill the bar to the pixel */
+html[data-aioff~="allchapters"] #movie_player .ytp-chapters-container { display: flex !important; }
+html[data-aioff~="allchapters"] #movie_player .ytp-chapter-hover-container {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  flex: 1 0 auto;
+}
+
+/* ----- "Jump ahead" ----- */
+html[data-aioff~="jumpahead"] #movie_player .ytp-timely-actions-content {
+  display: none !important;
+}
+
+/* ----- Ask YouTube in the search bar + AI answers stuck on top of search results ----- */
+html[data-aioff~="asksearch"] yt-searchbox [client-ve-type="307188"],
+html[data-aioff~="asksearch"] yt-searchbox .ytSearchboxComponentAiSuggestionsContainer,
+html[data-aioff~="asksearch"] ytd-search :is(ytd-section-list-renderer, ytd-item-section-renderer) > #contents > :not(ytd-video-renderer, yt-lockup-view-model, ytd-channel-renderer, ytd-playlist-renderer, ytd-radio-renderer, ytd-continuation-item-renderer, ytd-item-section-renderer, ytd-shelf-renderer, ytd-reel-shelf-renderer, grid-shelf-view-model, ytd-horizontal-card-list-renderer):has(:is(path[d^="M480-80q0-83-31.5-156T363-363"], path[d^="M1 12c6.075 0 11 4.925 11 11"])) {
+  display: none !important;
+}
+
+/* ----- AI comment summaries / "topics" ----- */
+html[data-aioff~="commentai"] ytd-comments :is(ytd-expandable-metadata-renderer, yt-chip-cloud-chip-renderer, chip-view-model, yt-button-view-model, ytd-button-renderer, yt-list-item-view-model):has(:is(path[d^="M480-80q0-83-31.5-156T363-363"], path[d^="M1 12c6.075 0 11 4.925 11 11"])),
+html[data-aioff~="commentai"] ytd-comments-header-renderer > :has(:is(path[d^="M480-80q0-83-31.5-156T363-363"], path[d^="M1 12c6.075 0 11 4.925 11 11"])) {
+  display: none !important;
+}
+
+/* ----- AI live chat summary (this one lives inside the chat iframe) ----- */
+html[data-aioff~="chatai"] :is(yt-live-chat-banner-renderer, yt-live-chat-banner-header-renderer, yt-live-chat-viewer-engagement-message-renderer):has(:is(path[d^="M480-80q0-83-31.5-156T363-363"], path[d^="M1 12c6.075 0 11 4.925 11 11"])) {
+  display: none !important;
+}
+
+/* ----- hide auto-dubbed videos entirely (off by default). that path is the little "dubbed" voice icon ----- */
+html[data-aioff~="dubbedvids"] :is(ytd-browse ytd-rich-item-renderer, #related yt-lockup-view-model, #related ytd-compact-video-renderer):has(path[d^="M19.4.2a1 1 0 00-.2 1.4"]) {
+  display: none !important;
+}
