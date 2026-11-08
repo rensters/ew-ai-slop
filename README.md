@@ -79,6 +79,16 @@ The icon is drawn by a script, run this if you change it:
 powershell -ExecutionPolicy Bypass -File tools\make-icons.ps1
 ```
 
+## Something AI slipped through? Report it
+
+The ⚠️ stuff up top is mostly US-only or Premium-only, so it's half guesswork until someone actually hits it. If you see one:
+
+1. On the YouTube page where it shows up, open the extension popup
+2. Click **"something still showing up? copy debug info"** at the bottom (it copies a report, nothing gets sent anywhere)
+3. [Open an issue](https://github.com/rensters/ew-ai-slop/issues/new) with a screenshot of the thing, the video link, and paste the report
+
+For extra detail, turn on debug mode first (F12, Console, `localStorage.setItem('aioff:debug', 1)`, reload) and then copy the report: it'll also show which chapters each YouTube response had before and after.
+
 ## When YouTube breaks it
 
 They change their page code constantly, so at some point something will slip through.

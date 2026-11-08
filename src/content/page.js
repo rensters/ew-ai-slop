@@ -18,8 +18,11 @@
   // flight recorder for the popup's "copy debug info" button. what we saw, what we killed, who beat us to it
   const diag = { initHook: 'not tried', initSeen: false, seen: [] }
   const chapterKeysIn = (s) => [...new Set((s.match(/"key":"[A-Z_]*CHAPTERS"/g) || []).map((m) => m.slice(7, -1)))]
-  const remember = (where, before, after, n) => {
-    diag.seen.push({ where, chaptersBefore: before.join(',') || '-', chaptersAfter: after.join(',') || '-', nuked: n })
+  // before/after are functions so the expensive chapter scan only runs in debug mode.
+  // normal people shouldn't pay for a report nobody's reading
+  const remember = (where, n, before, after) => {
+    const keys = (fn) => (debug ? fn().join(',') || '-' : 'debug off')
+    diag.seen.push({ where, nuked: n, chaptersBefore: keys(before), chaptersAfter: keys(after) })
     if (diag.seen.length > 12) diag.seen.shift()
   }
   const endpointOf = (url) => String(url).split('?')[0].replace(/.*\/youtubei\/v1\//, '')
@@ -206,7 +209,7 @@
     try { data = JSON.parse(txt) } catch (e) { return null }
     const n = nuke(data)
     const out = n ? JSON.stringify(data) : null
-    remember(endpointOf(url), chapterKeysIn(txt), chapterKeysIn(out || txt), n)
+    remember(endpointOf(url), n, () => chapterKeysIn(txt), () => chapterKeysIn(out || txt))
     return out
   }
 
@@ -251,7 +254,7 @@
         let out = raw
         try {
           if (typeof raw === 'string') out = patchText(raw, this.__aioffUrl) || raw
-          else if (raw && typeof raw === 'object' && this.responseType === 'json') remember('xhr json', [], [], nuke(raw))
+          else if (raw && typeof raw === 'object' && this.responseType === 'json') remember('xhr json', nuke(raw), () => [], () => [])
         } catch (e) {}
         this.__aioffCache = { raw, out }
         return out
@@ -273,9 +276,10 @@
         diag.initSeen = true
         if (v && typeof v === 'object') {
           try {
-            const before = chapterKeysIn(JSON.stringify(v))
+            // only stringify the whole page (twice!) when debugging. it's ~600KB a pop
+            const before = debug ? chapterKeysIn(JSON.stringify(v)) : []
             const n = nuke(v)
-            remember('first page load', before, chapterKeysIn(JSON.stringify(v)), n)
+            remember('first page load', n, () => before, () => chapterKeysIn(JSON.stringify(v)))
             log('initial data: nuked', n)
           } catch (e) { diag.initErr = String(e) }
         }
